@@ -1,9 +1,12 @@
 <script setup>
+import { computed, onMounted } from 'vue'
+
 import PanelSection from '../components/common/PanelSection.vue'
 import StatCard from '../components/common/StatCard.vue'
 import BatchGrid from '../components/restoration/BatchGrid.vue'
 import EnvironmentCards from '../components/restoration/EnvironmentCards.vue'
 import HeroBanner from '../components/restoration/HeroBanner.vue'
+import TaskScopeSwitcher from '../components/restoration/TaskScopeSwitcher.vue'
 import {
   restorationBatches,
   restorationEnvironment,
@@ -11,21 +14,40 @@ import {
   restorationSteps,
 } from '../data/restorationData'
 import { useRestorationOverview } from '../composables/useRestorationOverview'
+import { useRestorationTasks } from '../composables/useRestorationTasks'
 
 const { batchCount, environmentCount, highRiskCount, ownerCount } =
   useRestorationOverview()
+const {
+  scope,
+  loading,
+  setScope,
+  loadTasks,
+  retryTasks,
+} = useRestorationTasks()
 
-const statCards = [
+onMounted(() => {
+  loadTasks()
+})
+
+const statCards = computed(() => [
   { label: '在册批次', value: batchCount.value },
   { label: '高风险任务', value: highRiskCount.value },
   { label: '环境指标', value: environmentCount.value },
   { label: '参与修复师', value: ownerCount.value },
-]
+])
 </script>
 
 <template>
   <div class="view-stack">
     <HeroBanner :hero="restorationHero" />
+
+    <TaskScopeSwitcher
+      :model-value="scope"
+      :loading="loading"
+      @update:model-value="setScope"
+      @refresh="retryTasks"
+    />
 
     <section class="stats-grid">
       <StatCard

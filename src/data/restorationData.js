@@ -87,4 +87,16 @@ export const restorationTasks = [
     owner: '周恬',
     note: '等待封套尺寸确认。',
   },
+  {
+    title: '敦煌写经残卷',
+    stage: '除尘前',
+    risk: 'high',
+    note: '负责人暂缺，等待排班分派，先按高风险隔离。',
+  },
+  {
+    title: '无题契约散页',
+    risk: 'high',
+    owner: '陶隐',
+    note: '阶段信息未补录，定位时以风险标签为准。',
+  },
 ]

@@ -1,12 +1,22 @@
 <script setup>
-import { riskMeta } from '../../utils/restorationFormatters'
+import { riskMeta, displayText } from '../../utils/restorationFormatters'
 
 defineProps({
   rows: {
     type: Array,
     required: true,
   },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+  error: {
+    type: String,
+    default: '',
+  },
 })
+
+const emit = defineEmits(['retry'])
 </script>
 
 <template>
@@ -18,19 +28,48 @@ defineProps({
       <span>负责人</span>
       <span>说明</span>
     </div>
-    <div
-      v-for="row in rows"
-      :key="`${row.title}-${row.owner}`"
-      class="task-row"
-    >
-      <span>{{ row.title }}</span>
-      <span>{{ row.stage }}</span>
-      <span :class="['risk-tag', `risk-tag--${riskMeta(row.risk).tone}`]">
-        {{ riskMeta(row.risk).label }}
-      </span>
-      <span>{{ row.owner }}</span>
-      <span>{{ row.note }}</span>
+
+    <div v-if="loading" class="task-row task-state">
+      <span class="state-text">任务查询中，请稍候…</span>
     </div>
+
+    <div v-else-if="error" class="task-row task-state">
+      <span class="state-text">
+        {{ error }}
+        <button type="button" class="state-action" @click="emit('retry')">
+          重新查询
+        </button>
+      </span>
+    </div>
+
+    <div v-else-if="rows.length === 0" class="task-row task-state">
+      <span class="state-text">
+        当前范围内暂未查到任务
+        <button type="button" class="state-action" @click="emit('retry')">
+          重试
+        </button>
+      </span>
+    </div>
+
+    <template v-else>
+      <div
+        v-for="(row, index) in rows"
+        :key="`${row.title}-${index}`"
+        class="task-row"
+      >
+        <span>{{ row.title }}</span>
+        <span class="cell--missing" :class="{ 'cell--blank': !row.stage }">
+          {{ displayText(row.stage) }}
+        </span>
+        <span :class="['risk-tag', `risk-tag--${riskMeta(row.risk).tone}`]">
+          {{ riskMeta(row.risk).label }}
+        </span>
+        <span class="cell--missing" :class="{ 'cell--blank': !row.owner }">
+          {{ displayText(row.owner) }}
+        </span>
+        <span>{{ row.note }}</span>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -60,6 +99,37 @@ defineProps({
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 0.76rem;
+}
+
+.task-state {
+  grid-template-columns: 1fr;
+  justify-content: start;
+  color: #82684b;
+}
+
+.state-text {
+  font-size: 0.9rem;
+}
+
+.state-action {
+  margin-left: 10px;
+  border: 1px solid rgba(126, 96, 56, 0.4);
+  border-radius: 999px;
+  padding: 4px 14px;
+  background: transparent;
+  color: #7e6038;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.state-action:hover {
+  background: #efe2ca;
+}
+
+.cell--blank {
+  color: #a98b63;
+  font-style: italic;
 }
 
 .risk-tag {
