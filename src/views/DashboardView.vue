@@ -1,4 +1,6 @@
 <script setup>
+import { computed } from 'vue'
+
 import PanelSection from '../components/common/PanelSection.vue'
 import StatCard from '../components/common/StatCard.vue'
 import BatchGrid from '../components/restoration/BatchGrid.vue'
@@ -15,12 +17,14 @@ import { useRestorationOverview } from '../composables/useRestorationOverview'
 const { batchCount, environmentCount, highRiskCount, ownerCount } =
   useRestorationOverview()
 
-const statCards = [
+// 保持为计算属性：共享查询异步返回或范围切换后，卡片计数随数据更新，
+// 不再残留进入页面时的旧数值。卡片名称与排列保持不变。
+const statCards = computed(() => [
   { label: '在册批次', value: batchCount.value },
   { label: '高风险任务', value: highRiskCount.value },
   { label: '环境指标', value: environmentCount.value },
   { label: '参与修复师', value: ownerCount.value },
-]
+])
 </script>
 
 <template>

@@ -67,6 +67,7 @@ export const restorationSteps = [
 
 export const restorationTasks = [
   {
+    id: 'T-01',
     title: '明抄本县志残卷',
     stage: '补纸前',
     risk: 'high',
@@ -74,6 +75,7 @@ export const restorationTasks = [
     note: '虫道贯穿标题栏，需先固色。',
   },
   {
+    id: 'T-02',
     title: '碑帖拓片册页',
     stage: '控湿中',
     risk: 'medium',
@@ -81,10 +83,29 @@ export const restorationTasks = [
     note: '边缘卷曲，可延后压平。',
   },
   {
+    id: 'T-03',
     title: '戏曲抄本散页',
     stage: '归档前',
     risk: 'low',
     owner: '周恬',
     note: '等待封套尺寸确认。',
+  },
+  {
+    id: 'T-04',
+    title: '府县志舆图散页',
+    stage: '除尘中',
+    risk: 'high',
+    // 负责人暂未分派：查询与统计不能漏掉这类记录
+    owner: null,
+    note: '图面霉点连片，待分派负责人后安排固色。',
+  },
+  {
+    id: 'T-05',
+    title: '族谱残册夹页',
+    // 阶段尚未登记：定位阶段缺失时仍要能查到
+    stage: null,
+    risk: 'high',
+    owner: '沈箬',
+    note: '夹页虫蛀严重，阶段信息待补录。',
   },
 ]
